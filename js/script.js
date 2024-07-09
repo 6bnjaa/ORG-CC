@@ -1,9 +1,3 @@
-// js/script.js
-
-// Inicializar Socket.IO
-const socket = io();
-
-// Vue.js
 new Vue({
     el: '#app',
     data: {
@@ -16,7 +10,6 @@ new Vue({
     },
     created() {
         this.loadData();
-        this.setupSocketListeners();
     },
     methods: {
         subtractBalance(account) {
@@ -39,9 +32,16 @@ new Vue({
             account.amount = null;
             account.description = '';
             this.saveData();
-
-            // Emitir evento para actualizar datos
-            socket.emit('updateData', this.accounts);
+        },
+        getTotalTransactions(transactions) {
+            if (!Array.isArray(transactions)) {
+                return 0;
+            }
+            return transactions.reduce((total, transaction) => total + transaction.amount, 0);
+        },
+        toggleInitialBalanceInput() {
+            this.showMainContent = false;
+            this.showInitialBalanceInput = true;
         },
         updateInitialBalance(account) {
             if (account.newInitialBalance !== null) {
@@ -51,9 +51,6 @@ new Vue({
                 this.showMainContent = true;
                 this.showInitialBalanceInput = false;
                 this.saveData();
-
-                // Emitir evento para actualizar datos
-                socket.emit('updateData', this.accounts);
             } else {
                 alert('Por favor, ingresa una cantidad válida');
             }
@@ -67,11 +64,30 @@ new Vue({
                 this.accounts = JSON.parse(savedAccounts);
             }
         },
-        setupSocketListeners() {
-            // Escuchar evento del servidor para actualizar datos
-            socket.on('updateData', (data) => {
-                this.accounts = data;  // Actualizar datos locales
+        saveToFile() {
+            let data = '';
+            this.accounts.forEach(account => {
+                data += `${account.name}:\n`;
+                data += `----------------\n`;
+                data += `Gastos:\n`;
+                account.transactions.forEach(transaction => {
+                    data += `   -${transaction.description}: ${transaction.amount}\n`;
+                });
+                data += `----------------\n`;
+                data += `Saldo restante: ${account.balance}\n\n`;
             });
+
+            const blob = new Blob([data], { type: "text/plain;charset=utf-8" });
+            saveAs(blob, `gastos_${new Date().toISOString().slice(0, 10)}.txt`);
+        },
+        deleteAllData() {
+            if (confirm('¿Estás seguro que deseas borrar todos los datos?')) {
+                this.accounts.forEach(account => {
+                    account.description = '';
+                    account.transactions = [];
+                });
+                this.saveData();
+            }
         },
         cancelInitialBalanceUpdate() {
             this.showMainContent = true;
