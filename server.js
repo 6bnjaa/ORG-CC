@@ -8,7 +8,8 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 // Conectar a MongoDB Atlas
-const uri = "mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority";
+const uri = "mongodb+srv://benjitahonorato:12042006Benja.@cluster0.1jsy1q0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const AccountSchema = new mongoose.Schema({
