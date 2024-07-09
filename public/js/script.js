@@ -1,8 +1,3 @@
-// Importar Vue.js y socket.io-client
-import Vue from 'vue';
-import io from 'socket.io-client';
-
-// Establecer conexión con el servidor socket.io
 const socket = io();
 
 new Vue({
