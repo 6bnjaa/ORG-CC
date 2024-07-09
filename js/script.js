@@ -1,3 +1,5 @@
+const socket = io();
+
 new Vue({
     el: '#app',
     data: {
@@ -10,6 +12,9 @@ new Vue({
     },
     created() {
         this.loadData();
+        socket.on('updateData', (data) => {
+            this.accounts = data;
+        });
     },
     methods: {
         subtractBalance(account) {
@@ -32,6 +37,7 @@ new Vue({
             account.amount = null;
             account.description = '';
             this.saveData();
+            socket.emit('updateData', this.accounts);
         },
         getTotalTransactions(transactions) {
             if (!Array.isArray(transactions)) {
@@ -45,12 +51,13 @@ new Vue({
         },
         updateInitialBalance(account) {
             if (account.newInitialBalance !== null) {
-                account.balance += account.newInitialBalance; // Sumar al balance existente
-                account.initialBalance += account.newInitialBalance; // Sumar al saldo inicial
+                account.balance += account.newInitialBalance;
+                account.initialBalance += account.newInitialBalance;
                 account.newInitialBalance = null;
                 this.showMainContent = true;
                 this.showInitialBalanceInput = false;
                 this.saveData();
+                socket.emit('updateData', this.accounts);
             } else {
                 alert('Por favor, ingresa una cantidad válida');
             }
@@ -87,6 +94,7 @@ new Vue({
                     account.transactions = [];
                 });
                 this.saveData();
+                socket.emit('updateData', this.accounts);
             }
         },
         cancelInitialBalanceUpdate() {
