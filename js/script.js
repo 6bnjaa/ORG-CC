@@ -6,33 +6,24 @@
 new Vue({
     el: '#app',
     data: {
-        accounts: [
-            { name: 'Benja', balance: 0, initialBalance: 0, newInitialBalance: null, amount: null, description: '', transactions: [] },
-            { name: 'Nacho', balance: 0, initialBalance: 0, newInitialBalance: null, amount: null, description: '', transactions: [] }
-        ],
-        showMainContent: true,
-        showInitialBalanceInput: false
+        accounts: []
     },
     created() {
         // Establecer conexión con el servidor Socket.IO
         const socket = io();
-        
-        // Escuchar eventos desde el servidor
-        socket.on('updateData', (data) => {
-            this.accounts = data; // Actualizar datos recibidos desde el servidor
-        });
-
-        // Método para emitir eventos al servidor
-        this.$socket = socket;
-
-        // Solicitar datos iniciales al servidor cuando se conecte
-        this.$socket.emit('requestInitialData');
 
         // Escuchar datos iniciales desde el servidor
-        this.$socket.on('initialData', (data) => {
+        socket.on('initialData', (data) => {
             this.accounts = data;
-            this.saveDataLocally(); // Guardar datos locales al recibir datos iniciales
         });
+
+        // Escuchar actualizaciones de datos desde el servidor
+        socket.on('updateData', (data) => {
+            this.accounts = data;
+        });
+
+        // Solicitar datos iniciales al servidor cuando se conecte
+        socket.emit('requestInitialData');
     },
     methods: {
         subtractBalance(account) {
@@ -56,39 +47,19 @@ new Vue({
             account.description = '';
             this.saveData(); // Emitir cambios al servidor
         },
-        getTotalTransactions(transactions) {
-            if (!Array.isArray(transactions)) {
-                return 0;
-            }
-            return transactions.reduce((total, transaction) => total + transaction.amount, 0);
-        },
-        toggleInitialBalanceInput() {
-            this.showMainContent = false;
-            this.showInitialBalanceInput = true;
-        },
         updateInitialBalance(account) {
             if (account.newInitialBalance !== null) {
                 account.balance += account.newInitialBalance; // Sumar al balance existente
                 account.initialBalance += account.newInitialBalance; // Sumar al saldo inicial
                 account.newInitialBalance = null;
-                this.showMainContent = true;
-                this.showInitialBalanceInput = false;
                 this.saveData(); // Emitir cambios al servidor
             } else {
                 alert('Por favor, ingresa una cantidad válida');
             }
         },
         saveData() {
-            this.$socket.emit('updateData', this.accounts); // Emitir datos actualizados al servidor
-        },
-        saveDataLocally() {
-            localStorage.setItem('accounts', JSON.stringify(this.accounts)); // Guardar datos localmente en localStorage
-        },
-        loadData() {
-            const savedAccounts = localStorage.getItem('accounts');
-            if (savedAccounts) {
-                this.accounts = JSON.parse(savedAccounts);
-            }
+            // Emitir cambios al servidor
+            this.$socket.emit('updateData', this.accounts);
         },
         saveToFile() {
             let data = '';
@@ -115,9 +86,8 @@ new Vue({
                 this.saveData(); // Emitir cambios al servidor
             }
         },
-        cancelInitialBalanceUpdate() {
-            this.showMainContent = true;
-            this.showInitialBalanceInput = false;
+        cancelInitialBalanceUpdate(account) {
+            account.newInitialBalance = null;
         }
     }
 });
