@@ -1,3 +1,5 @@
+// server.js
+
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -7,8 +9,10 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+// Middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Configuración de Socket.IO
 io.on('connection', (socket) => {
     console.log('a user connected');
 
@@ -17,7 +21,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('updateData', (data) => {
-        io.emit('updateData', data);
+        io.emit('updateData', data);  // Emitir evento a todos los clientes
     });
 });
 
