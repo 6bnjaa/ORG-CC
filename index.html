@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.2/css/all.css">
+    <title>Organizador de Cuentas</title>
+</head>
+<body>
+    <div id="app">
+        <div v-if="showMainContent" class="account-container">
+            <div class="account" v-for="account in accounts" :key="account.name">
+                <div class="accountHead">
+                    <h2>{{ account.name }}</h2>
+                    <button @click="toggleInitialBalanceInput()"><i class="fa-solid fa-money-from-bracket icons"></i></button>
+                </div>
+                <p class="money">Saldo restante: ${{ account.balance }}</p>
+                <div class="input-container">
+                    <input type="text" v-model="account.description" placeholder="Descripción">
+                    <input type="number" v-model.number="account.amount" placeholder="Ingresa cantidad">
+                    <button @click="subtractBalance(account)"><i class="fa-solid fa-check icons"></i></button>
+                </div>
+                <div class="transactions">
+                    <div v-for="(transaction, index) in account.transactions" :key="index" class="transaction">
+                        <p>- {{ transaction.description }}: ${{ transaction.amount }}</p>
+                    </div>
+                </div>
+                <p class="money" style="margin-bottom: 1vw;">Gastos totales: ${{ getTotalTransactions(account.transactions) }}</p>
+            </div>
+        </div>
+        <div v-if="showInitialBalanceInput" class="account-container">
+            <div class="account" v-for="account in accounts" :key="account.name">
+                <div class="accountchangehead">
+                    <button @click="cancelInitialBalanceUpdate" class="account-button"><i class="fa-solid fa-angle-left icons"></i></button>
+                    <h2 class="account-name">{{ account.name }}</h2>
+                </div>
+                <div class="input-container">
+                    <input type="number" v-model.number="account.newInitialBalance" placeholder="Saldo inicial" style="margin-left: 10px;">
+                    <button @click="updateInitialBalance(account)">Actualizar</button>
+                </div>
+            </div>
+        </div>
+        <div v-if="showMainContent" class="action-buttons">
+            <button @click="saveToFile">Guardar en TXT</button>
+            <button @click="deleteAllData">Borrar Gastos</button>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

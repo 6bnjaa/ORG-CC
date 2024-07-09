@@ -1,0 +1,212 @@
+:root {
+    --background: #101010;
+    --background2: #222222;
+    --color1: #1C1C1C;
+    --font: #eae6e6;
+    --box-shadow-color: #000;
+    --border-color: #000;
+    --highlight-color: #353535;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    color: var(--font);
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--background);
+}
+
+button {
+    background-color: var(--color1);
+    border: none;
+    border-radius: .8vh;
+    color: var(--font);
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--highlight-color);
+}
+
+.account-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.account {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background2);
+    box-shadow: 0 0 .4vw var(--box-shadow-color);
+    padding: 1vw;
+    border-radius: .8vw;
+    margin-bottom: 20px;
+    width: calc(50% - 20px);
+    max-width: 40vw;
+    max-height: 40vw;
+    min-height: 20vw;
+    min-width: 20vw;
+}
+
+.accountHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.account h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 85%;
+    background-color: var(--color1);
+    height: 2.5rem;
+    padding: 1vw 2vw;
+    border-radius: .8vh;
+}
+
+.accountHead button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.account .money {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1vw;
+    background-color: var(--color1);
+    width: 100%;
+    height: 2.5rem;
+    padding: 1vw 2vw;
+    border-radius: .8vh;
+}
+
+.account input {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid var(--color1);
+    border-radius: .8vh;
+    background-color: var(--color1);
+    color: var(--font);
+}
+
+input:focus {
+    background-color: var(--highlight-color);
+    border: none;
+}
+
+.input-container {
+    display: flex;
+    gap: 10px;
+    align-items: center; /* Alinear los elementos verticalmente */
+    flex-wrap: nowrap;
+}
+
+.account input[type="number"],
+.account input[type="text"] {
+    flex: 1;
+    min-width: 0;
+}
+
+.account button {
+    flex-shrink: 0;
+    padding: 10px 20px;
+}
+
+.transactions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color1);
+    padding: 1vw 2vw;
+    border-radius: .8vh;
+}
+
+button.account-action {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.accountchangehead {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Espacio entre este y el siguiente elemento */
+}
+
+.account-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2.5rem; /* Establece la misma altura que el h2 */
+    padding: 0 1rem; /* Ajusta el padding según sea necesario */
+    background-color: var(--color1);
+    border: none;
+    border-radius: .8vh;
+    color: var(--font);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.account-name {
+    height: 2.5rem; /* Establece la misma altura que el botón */
+    line-height: 2.5rem; /* Alinea verticalmente el texto */
+    margin-left: 10px; /* Añade un margen izquierdo para separar del botón */
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.input-container input[type="number"] {
+    padding: 10px;
+    margin: 0;
+    border: 1px solid var(--color1);
+    border-radius: .8vh;
+    background-color: var(--color1);
+    color: var(--font);
+    flex: 1;
+}
+
+.input-container button {
+    padding: 10px;
+    margin-left: 10px;
+    background-color: var(--color1);
+    border: none;
+    border-radius: .8vh;
+    color: var(--font);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.input-container button:hover {
+    background-color: var(--highlight-color);
+}
