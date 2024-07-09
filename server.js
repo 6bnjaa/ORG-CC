@@ -1,3 +1,5 @@
+// server.js
+
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -17,7 +19,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('updateData', (data) => {
-        io.emit('updateData', data);
+        io.emit('updateData', data); // Emitir evento a todos los clientes conectados
     });
 });
 

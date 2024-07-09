@@ -1,4 +1,3 @@
-const socket = io();
 
 new Vue({
     el: '#app',
@@ -12,9 +11,17 @@ new Vue({
     },
     created() {
         this.loadData();
+
+        // Establecer conexión con el servidor Socket.IO
+        const socket = io();
+        
+        // Escuchar eventos desde el servidor
         socket.on('updateData', (data) => {
-            this.accounts = data;
+            this.accounts = data; // Actualizar datos recibidos desde el servidor
         });
+
+        // Método para emitir eventos al servidor
+        this.$socket = socket;
     },
     methods: {
         subtractBalance(account) {
@@ -37,7 +44,6 @@ new Vue({
             account.amount = null;
             account.description = '';
             this.saveData();
-            socket.emit('updateData', this.accounts);
         },
         getTotalTransactions(transactions) {
             if (!Array.isArray(transactions)) {
@@ -51,19 +57,19 @@ new Vue({
         },
         updateInitialBalance(account) {
             if (account.newInitialBalance !== null) {
-                account.balance += account.newInitialBalance;
-                account.initialBalance += account.newInitialBalance;
+                account.balance += account.newInitialBalance; // Sumar al balance existente
+                account.initialBalance += account.newInitialBalance; // Sumar al saldo inicial
                 account.newInitialBalance = null;
                 this.showMainContent = true;
                 this.showInitialBalanceInput = false;
                 this.saveData();
-                socket.emit('updateData', this.accounts);
             } else {
                 alert('Por favor, ingresa una cantidad válida');
             }
         },
         saveData() {
             localStorage.setItem('accounts', JSON.stringify(this.accounts));
+            this.$socket.emit('updateData', this.accounts); // Enviar datos actualizados al servidor
         },
         loadData() {
             const savedAccounts = localStorage.getItem('accounts');
@@ -94,7 +100,6 @@ new Vue({
                     account.transactions = [];
                 });
                 this.saveData();
-                socket.emit('updateData', this.accounts);
             }
         },
         cancelInitialBalanceUpdate() {
