@@ -17,11 +17,13 @@ io.on('connection', (socket) => {
     });
 
     socket.on('updateData', (data) => {
-        io.emit('updateData', data);
+        // Emitir el evento solo a otros clientes
+        socket.broadcast.emit('updateData', data);
     });
 });
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+// No es necesario especificar el puerto cuando se despliega en Vercel
+
+server.listen(() => {
+    console.log('Server is running');
 });

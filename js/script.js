@@ -1,3 +1,9 @@
+// Importar socket.io-client
+import io from 'socket.io-client';
+
+// Establecer conexión con el servidor socket.io
+const socket = io();
+
 new Vue({
     el: '#app',
     data: {
@@ -10,6 +16,12 @@ new Vue({
     },
     created() {
         this.loadData();
+
+        // Escuchar el evento 'updateData' del servidor
+        socket.on('updateData', (data) => {
+            // Actualizar los datos en Vue.js
+            this.accounts = data;
+        });
     },
     methods: {
         subtractBalance(account) {
@@ -32,6 +44,9 @@ new Vue({
             account.amount = null;
             account.description = '';
             this.saveData();
+
+            // Emitir el evento 'updateData' al servidor
+            socket.emit('updateData', this.accounts);
         },
         getTotalTransactions(transactions) {
             if (!Array.isArray(transactions)) {
@@ -51,6 +66,9 @@ new Vue({
                 this.showMainContent = true;
                 this.showInitialBalanceInput = false;
                 this.saveData();
+
+                // Emitir el evento 'updateData' al servidor
+                socket.emit('updateData', this.accounts);
             } else {
                 alert('Por favor, ingresa una cantidad válida');
             }
@@ -87,6 +105,9 @@ new Vue({
                     account.transactions = [];
                 });
                 this.saveData();
+
+                // Emitir el evento 'updateData' al servidor
+                socket.emit('updateData', this.accounts);
             }
         },
         cancelInitialBalanceUpdate() {
