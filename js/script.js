@@ -1,12 +1,11 @@
-// index.js
-
-// Importar Socket.IO si no está disponible globalmente
-// import io from 'socket.io-client';
-
 new Vue({
     el: '#app',
     data: {
-        accounts: []
+        accounts: [],        // Arreglo de cuentas
+        newAccountName: '',  // Nombre de la nueva cuenta
+        showMainContent: true,
+        showInitialBalanceInput: false,
+        showAddAccountDialog: false
     },
     created() {
         // Establecer conexión con el servidor Socket.IO
@@ -26,6 +25,36 @@ new Vue({
         socket.emit('requestInitialData');
     },
     methods: {
+        addAccount() {
+            if (!this.newAccountName.trim()) {
+                alert('Por favor, ingresa un nombre válido para la cuenta.');
+                return;
+            }
+
+            // Verificar si ya existe una cuenta con el mismo nombre
+            if (this.accounts.some(account => account.name === this.newAccountName)) {
+                alert('Ya existe una cuenta con ese nombre.');
+                return;
+            }
+
+            // Crear nueva cuenta y agregarla al array de cuentas
+            const newAccount = {
+                name: this.newAccountName,
+                balance: 0,
+                initialBalance: 0,
+                newInitialBalance: null,
+                amount: null,
+                description: '',
+                transactions: []
+            };
+
+            this.accounts.push(newAccount);
+            this.saveData(); // Emitir cambios al servidor
+
+            // Limpiar el nombre de la nueva cuenta después de agregarla
+            this.newAccountName = '';
+            this.showAddAccountDialog = false; // Ocultar el diálogo después de agregar
+        },
         subtractBalance(account) {
             if (account.amount <= 0 || account.amount === null) {
                 alert('Por favor, ingresa una cantidad válida');
@@ -88,6 +117,22 @@ new Vue({
         },
         cancelInitialBalanceUpdate(account) {
             account.newInitialBalance = null;
+            this.showMainContent = true;
+            this.showInitialBalanceInput = false;
+        },
+        toggleInitialBalanceInput() {
+            this.showMainContent = false;
+            this.showInitialBalanceInput = true;
+        },
+        cancelAddAccount() {
+            this.showAddAccountDialog = false;
+            this.newAccountName = '';
+        },
+        getTotalTransactions(transactions) {
+            if (!Array.isArray(transactions)) {
+                return 0;
+            }
+            return transactions.reduce((total, transaction) => total + transaction.amount, 0);
         }
     }
 });

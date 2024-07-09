@@ -1,5 +1,3 @@
-// server.js
-
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -50,6 +48,21 @@ io.on('connection', (socket) => {
     // Actualizar datos y emitir cambios a todos los clientes conectados
     socket.on('updateData', (data) => {
         accounts = data;
+        io.emit('updateData', accounts); // Emitir cambios a todos los clientes
+        saveAccounts(accounts); // Guardar cambios en el archivo
+    });
+
+    // Manejar la creación de una nueva cuenta
+    socket.on('addAccount', (newAccount) => {
+        // Verificar si ya existe una cuenta con el mismo nombre
+        const existingAccount = accounts.find(account => account.name === newAccount.name);
+        if (existingAccount) {
+            socket.emit('addAccountError', 'Ya existe una cuenta con ese nombre.');
+            return;
+        }
+
+        // Agregar la nueva cuenta al arreglo de cuentas
+        accounts.push(newAccount);
         io.emit('updateData', accounts); // Emitir cambios a todos los clientes
         saveAccounts(accounts); // Guardar cambios en el archivo
     });
