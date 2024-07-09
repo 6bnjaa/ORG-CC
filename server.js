@@ -7,7 +7,6 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-// Configura Express para servir archivos estáticos si es necesario
 app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', (socket) => {
