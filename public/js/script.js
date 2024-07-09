@@ -1,4 +1,3 @@
-import io from 'socket.io-client/dist/socket.io.js';
 const socket = io();
 
 new Vue({

@@ -17,7 +17,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('updateData', (data) => {
-        // Emitir el evento solo a otros clientes
         socket.broadcast.emit('updateData', data);
     });
 });
