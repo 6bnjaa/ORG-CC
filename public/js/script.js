@@ -37,7 +37,7 @@ new Vue({
             account.amount = null;
             account.description = '';
             this.saveData();
-            socket.emit('updateData', this.accounts);
+            socket.emit('updateData', this.accounts); // Emitir el evento 'updateData' al servidor
         },
         getTotalTransactions(transactions) {
             if (!Array.isArray(transactions)) {
@@ -57,7 +57,7 @@ new Vue({
                 this.showMainContent = true;
                 this.showInitialBalanceInput = false;
                 this.saveData();
-                socket.emit('updateData', this.accounts);
+                socket.emit('updateData', this.accounts); // Emitir el evento 'updateData' al servidor
             } else {
                 alert('Por favor, ingresa una cantidad válida');
             }
@@ -94,7 +94,7 @@ new Vue({
                     account.transactions = [];
                 });
                 this.saveData();
-                socket.emit('updateData', this.accounts);
+                socket.emit('updateData', this.accounts); // Emitir el evento 'updateData' al servidor
             }
         },
         cancelInitialBalanceUpdate() {
