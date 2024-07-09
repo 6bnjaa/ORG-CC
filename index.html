@@ -32,7 +32,7 @@
         <div v-if="showInitialBalanceInput" class="account-container">
             <div class="account" v-for="account in accounts" :key="account.name">
                 <div class="accountchangehead">
-                    <button @click="cancelInitialBalanceUpdate(account)" class="account-button"><i class="fa-solid fa-angle-left icons"></i></button>
+                    <button @click="cancelInitialBalanceUpdate" class="account-button"><i class="fa-solid fa-angle-left icons"></i></button>
                     <h2 class="account-name">{{ account.name }}</h2>
                 </div>
                 <div class="input-container">
@@ -44,16 +44,6 @@
         <div v-if="showMainContent" class="action-buttons">
             <button @click="saveToFile">Guardar en TXT</button>
             <button @click="deleteAllData">Borrar Gastos</button>
-            <button @click="showAddAccountDialog = true">Agregar Cuenta</button>
-        </div>
-        <!-- Diálogo para agregar cuenta -->
-        <div v-if="showAddAccountDialog" class="add-account-dialog">
-            <div class="dialog-content">
-                <h3>Agregar Nueva Cuenta</h3>
-                <input type="text" v-model="newAccountName" placeholder="Nombre de la cuenta">
-                <button @click="addAccount">Agregar</button>
-                <button @click="cancelAddAccount">Cancelar</button>
-            </div>
         </div>
     </div>
     
