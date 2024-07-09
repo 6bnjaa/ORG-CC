@@ -11,6 +11,11 @@ const io = socketIo(server);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+let accounts = [
+    { name: 'Benja', balance: 0, initialBalance: 0, newInitialBalance: null, amount: null, description: '', transactions: [] },
+    { name: 'Nacho', balance: 0, initialBalance: 0, newInitialBalance: null, amount: null, description: '', transactions: [] }
+];
+
 io.on('connection', (socket) => {
     console.log('a user connected');
 
@@ -18,8 +23,18 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
     });
 
+    // Enviar datos iniciales al cliente que se conecta
+    socket.emit('initialData', accounts);
+
+    // Manejar solicitud de datos iniciales desde el cliente
+    socket.on('requestInitialData', () => {
+        socket.emit('initialData', accounts);
+    });
+
+    // Actualizar datos y emitir cambios a todos los clientes conectados
     socket.on('updateData', (data) => {
-        io.emit('updateData', data); // Emitir evento a todos los clientes conectados
+        accounts = data;
+        io.emit('updateData', accounts);
     });
 });
 

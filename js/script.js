@@ -1,3 +1,7 @@
+// index.js
+
+// Importar Socket.IO si no está disponible globalmente
+// import io from 'socket.io-client';
 
 new Vue({
     el: '#app',
@@ -10,8 +14,6 @@ new Vue({
         showInitialBalanceInput: false
     },
     created() {
-        this.loadData();
-
         // Establecer conexión con el servidor Socket.IO
         const socket = io();
         
@@ -22,6 +24,15 @@ new Vue({
 
         // Método para emitir eventos al servidor
         this.$socket = socket;
+
+        // Solicitar datos iniciales al servidor cuando se conecte
+        this.$socket.emit('requestInitialData');
+
+        // Escuchar datos iniciales desde el servidor
+        this.$socket.on('initialData', (data) => {
+            this.accounts = data;
+            this.saveDataLocally(); // Guardar datos locales al recibir datos iniciales
+        });
     },
     methods: {
         subtractBalance(account) {
@@ -43,7 +54,7 @@ new Vue({
             account.transactions.push({ amount: account.amount, description: account.description });
             account.amount = null;
             account.description = '';
-            this.saveData();
+            this.saveData(); // Emitir cambios al servidor
         },
         getTotalTransactions(transactions) {
             if (!Array.isArray(transactions)) {
@@ -62,14 +73,16 @@ new Vue({
                 account.newInitialBalance = null;
                 this.showMainContent = true;
                 this.showInitialBalanceInput = false;
-                this.saveData();
+                this.saveData(); // Emitir cambios al servidor
             } else {
                 alert('Por favor, ingresa una cantidad válida');
             }
         },
         saveData() {
-            localStorage.setItem('accounts', JSON.stringify(this.accounts));
-            this.$socket.emit('updateData', this.accounts); // Enviar datos actualizados al servidor
+            this.$socket.emit('updateData', this.accounts); // Emitir datos actualizados al servidor
+        },
+        saveDataLocally() {
+            localStorage.setItem('accounts', JSON.stringify(this.accounts)); // Guardar datos localmente en localStorage
         },
         loadData() {
             const savedAccounts = localStorage.getItem('accounts');
@@ -99,7 +112,7 @@ new Vue({
                     account.description = '';
                     account.transactions = [];
                 });
-                this.saveData();
+                this.saveData(); // Emitir cambios al servidor
             }
         },
         cancelInitialBalanceUpdate() {
