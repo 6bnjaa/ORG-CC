@@ -14,6 +14,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
+        localStorage.setItem('accounts', JSON.stringify(this.accounts));
     });
 
     socket.on('updateData', (data) => {
